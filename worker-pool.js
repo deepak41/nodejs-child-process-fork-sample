@@ -8,7 +8,7 @@ module.exports = function(worker) {
 	var poolSize = 0;
 
 	return function runJob(job, cb) {
-		if (!readyPool.length && poolSize > cpus)
+		if(!readyPool.length && poolSize > cpus)
 			return awaitingJobs.push([ runJob, job, cb ]);
 
 		var childProcess = readyPool.length ? readyPool.shift() : (poolSize++, cp.fork(worker));
@@ -20,21 +20,21 @@ module.exports = function(worker) {
 				cb(null, msg);
 				cbTriggered = true;
 				readyPool.push(childProcess);
-				if (awaitingJobs.length) setImmediate.apply(null, awaitingJobs.shift());
+				if(awaitingJobs.length) setImmediate.apply(null, awaitingJobs.shift());
 			})
 			.once('error', (err) => {
-				if (!cbTriggered) {
+				if(!cbTriggered) {
 					cb(err);
 					cbTriggered = true;
 				}
 				childProcess.kill();
 			})
 			.once('exit', () => {
-				if (!cbTriggered)
+				if(!cbTriggered)
 					cb(new Error('childProcess exited with code: ' + code));
 				poolSize--;
 				var childProcessIdx = readyPool.indexOf(childProcess);
-				if (childProcessIdx > -1) readyPool.splice(childProcessIdx, 1);
+				if(childProcessIdx > -1) readyPool.splice(childProcessIdx, 1);
 			})
 			.send(job);
 	}
