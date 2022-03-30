@@ -9,7 +9,7 @@ module.exports = function(worker) {
 
 	return function runJob(job, cb) {
 		if(!readyPool.length && poolSize > cpus)
-			return awaitingJobs.push([ runJob, job, cb ]);
+			return awaitingJobs.push([runJob, job, cb]);
 
 		var childProcess = readyPool.length ? readyPool.shift() : (poolSize++, cp.fork(worker));
 		var cbTriggered = false;
