@@ -7,7 +7,7 @@ module.exports = function(worker) {
 	var readyPool = [];
 	var poolSize = 0;
 
-	return function runJob (job, cb) {
+	return function runJob(job, cb) {
 		if (!readyPool.length && poolSize > cpus)
 			return awaitingJobs.push([ runJob, job, cb ]);
 
